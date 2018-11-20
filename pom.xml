@@ -13,6 +13,7 @@
         <zookeeper.version>3.4.6</zookeeper.version>
         <netty.version>4.1.31.Final</netty.version>
         <log4j2.version>2.9.1</log4j2.version>
+        <protostuff.version>1.0.9</protostuff.version>
     </properties>
     <dependencies>
         <dependency>
@@ -29,6 +30,16 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
             <version>${log4j2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-core</artifactId>
+            <version>${protostuff.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-runtime</artifactId>
+            <version>${protostuff.version}</version>
         </dependency>
     </dependencies>
     <build>
