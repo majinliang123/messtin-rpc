@@ -11,5 +11,16 @@
 
     <artifactId>rpc-client</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <artifactId>rpc-registry</artifactId>
+            <groupId>org.messtin</groupId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>rpc-common</artifactId>
+            <groupId>org.messtin</groupId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -14,7 +14,7 @@ public class RpcRequest {
     private String serviceVersion;
     private String methodName;
     private Class<?>[] paramTypes;
-    private Object params;
+    private Object[] params;
 
     public String getRequestId() {
         return requestId;
@@ -56,13 +56,14 @@ public class RpcRequest {
         this.paramTypes = paramTypes;
     }
 
-    public Object getParams() {
+    public Object[] getParams() {
         return params;
     }
 
-    public void setParams(Object params) {
+    public void setParams(Object[] params) {
         this.params = params;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -74,13 +75,14 @@ public class RpcRequest {
                 Objects.equals(serviceVersion, that.serviceVersion) &&
                 Objects.equals(methodName, that.methodName) &&
                 Arrays.equals(paramTypes, that.paramTypes) &&
-                Objects.equals(params, that.params);
+                Arrays.equals(params, that.params);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(requestId, interfaceName, serviceVersion, methodName, params);
+        int result = Objects.hash(requestId, interfaceName, serviceVersion, methodName);
         result = 31 * result + Arrays.hashCode(paramTypes);
+        result = 31 * result + Arrays.hashCode(params);
         return result;
     }
 
@@ -92,7 +94,7 @@ public class RpcRequest {
                 ", serviceVersion='" + serviceVersion + '\'' +
                 ", methodName='" + methodName + '\'' +
                 ", paramTypes=" + Arrays.toString(paramTypes) +
-                ", params=" + params +
+                ", params=" + Arrays.toString(params) +
                 '}';
     }
 }
