@@ -38,6 +38,7 @@ public class RpcProxy {
 
                     String serviceName = interfaceName+serviceVersion;
                     String[] address = serviceDiscovery.discover(serviceName).split(":");
+                    System.out.println(serviceDiscovery.discover(serviceName));
                     String host = address[0];
                     int port = Integer.parseInt(address[1]);
                     RpcClient client = new RpcClient(host, port);

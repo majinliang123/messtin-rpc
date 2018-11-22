@@ -42,7 +42,8 @@ public class ZookeeperServiceRegistry implements ServiceRegistry {
             logger.info(String.format("Create service node %s.", servicePath));
         }
 
-        String addressPath = servicePath + Constants.VIRGULE + "/address-";
+        String addressPath = servicePath + Constants.VIRGULE + "address-";
+        System.out.println(addressPath);
         zooKeeper.create(addressPath, address.getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
         logger.info(String.format("Create address node %s.", addressPath));

@@ -12,6 +12,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.messtin.rpc.common.codec.RpcDecoder;
 import org.messtin.rpc.common.codec.RpcEncoder;
 import org.messtin.rpc.common.entity.RpcRequest;
+import org.messtin.rpc.common.entity.RpcResponse;
 import org.messtin.rpc.registry.ServiceRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -70,11 +71,14 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new RpcDecoder(RpcRequest.class));
-                            ch.pipeline().addLast(new RpcEncoder(RpcRequest.class));
+                            ch.pipeline().addLast(new RpcEncoder(RpcResponse.class));
                             ch.pipeline().addLast(new RpcHandler(handlerMap));
                         }
                     });
             ChannelFuture future = serverBootstrap.bind().sync();
+            for (String interfaceName : handlerMap.keySet()) {
+                serviceRegistry.register(interfaceName, serviceAddress);
+            }
             System.out.println("Server start linsten at: " + future.channel().localAddress());
             future.channel().closeFuture().sync();
         } finally {

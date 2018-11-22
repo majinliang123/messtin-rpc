@@ -37,12 +37,13 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
         if (addresses.isEmpty()) {
             throw new RuntimeException(String.format("Can not find any address node on path: %s", servicePath));
         }
-        String address = null;
+        String nodeName = null;
         if (addresses.size() == 1) {
-            address = addresses.get(0);
+            nodeName = addresses.get(0);
         } else {
-            address = addresses.get(ThreadLocalRandom.current().nextInt(addresses.size()));
+            nodeName = addresses.get(ThreadLocalRandom.current().nextInt(addresses.size()));
         }
+        String address = new String(zooKeeper.getData(servicePath + Constants.VIRGULE + nodeName, true, new Stat()));
         logger.info(String.format("Get address %s", address));
         return address;
     }

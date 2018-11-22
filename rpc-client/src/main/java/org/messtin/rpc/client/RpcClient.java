@@ -21,7 +21,7 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) {
         this.response = msg;
     }
 
@@ -36,17 +36,18 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new RpcEncoder(RpcRequest.class));
-                            ch.pipeline().addLast(new RpcDecoder(RpcRequest.class));
+                            ch.pipeline().addLast(new RpcDecoder(RpcResponse.class));
                             ch.pipeline().addLast(RpcClient.this);
                         }
                     });
+            bootstrap.option(ChannelOption.TCP_NODELAY, true);
             ChannelFuture future = bootstrap.connect(host, port).sync();
             Channel channel = future.channel();
             channel.writeAndFlush(request).sync();
             channel.closeFuture().sync();
+            return response;
         } finally {
             group.shutdownGracefully();
         }
-        return response;
     }
 }
