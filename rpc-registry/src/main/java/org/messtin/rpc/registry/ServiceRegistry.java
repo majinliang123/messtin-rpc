@@ -1,7 +1,7 @@
 package org.messtin.rpc.registry;
 
 /**
- * The interface to registry a service
+ * The interface to registry a service.
  *
  * @author majinliang
  */

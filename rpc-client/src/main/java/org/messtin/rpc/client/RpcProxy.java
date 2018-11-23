@@ -8,6 +8,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
 
+/**
+ * Use proxy to create object which the user want to call.
+ *
+ * @author majinliang
+ */
 public class RpcProxy {
     private ServiceDiscovery serviceDiscovery;
 

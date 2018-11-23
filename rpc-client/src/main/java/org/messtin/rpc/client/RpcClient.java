@@ -5,12 +5,20 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import org.apache.log4j.Logger;
 import org.messtin.rpc.common.codec.RpcDecoder;
 import org.messtin.rpc.common.codec.RpcEncoder;
 import org.messtin.rpc.common.entity.RpcRequest;
 import org.messtin.rpc.common.entity.RpcResponse;
 
+/**
+ * RpcClient uses to connect with server.
+ *
+ * @author majinliang
+ */
 public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
+    private static final Logger logger = Logger.getLogger(RpcClient.class);
+
     private String host;
     private int port;
     private RpcResponse response;
@@ -22,12 +30,21 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcResponse msg) {
+        logger.info(String.format("Receive response: %s", msg));
         this.response = msg;
     }
 
+    /**
+     * Send request message to server.
+     *
+     * @param request
+     * @return
+     * @throws InterruptedException
+     */
     public RpcResponse send(RpcRequest request) throws InterruptedException {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
+            logger.info(String.format("Connecting with server {}:{}.", host, port));
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
@@ -44,6 +61,7 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
             ChannelFuture future = bootstrap.connect(host, port).sync();
             Channel channel = future.channel();
             channel.writeAndFlush(request).sync();
+            logger.info(String.format("Sent request {} to server", request));
             channel.closeFuture().sync();
             return response;
         } finally {

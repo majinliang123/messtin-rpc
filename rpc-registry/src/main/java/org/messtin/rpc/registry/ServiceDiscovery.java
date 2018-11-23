@@ -1,7 +1,7 @@
 package org.messtin.rpc.registry;
 
 /**
- * The interface for discover service
+ * The interface for discover service.
  *
  * @author majinliang
  */

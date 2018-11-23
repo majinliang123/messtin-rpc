@@ -33,15 +33,15 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
             throw new RuntimeException(String.format("Can not find any service node on path: %s", servicePath));
         }
         logger.info(String.format("Node %s existed and its version is %s", servicePath, serviceStat.getVersion()));
-        List<String> addresses = zooKeeper.getChildren(servicePath, true);
-        if (addresses.isEmpty()) {
+        List<String> nodes = zooKeeper.getChildren(servicePath, true);
+        if (nodes.isEmpty()) {
             throw new RuntimeException(String.format("Can not find any address node on path: %s", servicePath));
         }
         String nodeName = null;
-        if (addresses.size() == 1) {
-            nodeName = addresses.get(0);
+        if (nodes.size() == 1) {
+            nodeName = nodes.get(0);
         } else {
-            nodeName = addresses.get(ThreadLocalRandom.current().nextInt(addresses.size()));
+            nodeName = nodes.get(ThreadLocalRandom.current().nextInt(nodes.size()));
         }
         String address = new String(zooKeeper.getData(servicePath + Constants.VIRGULE + nodeName, true, new Stat()));
         logger.info(String.format("Get address %s", address));

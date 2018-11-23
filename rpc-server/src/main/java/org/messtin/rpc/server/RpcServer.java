@@ -1,14 +1,13 @@
 package org.messtin.rpc.server;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFactory;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import org.apache.log4j.Logger;
 import org.messtin.rpc.common.codec.RpcDecoder;
 import org.messtin.rpc.common.codec.RpcEncoder;
 import org.messtin.rpc.common.entity.RpcRequest;
@@ -22,7 +21,14 @@ import org.springframework.context.ApplicationContextAware;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The server we start.
+ *
+ * @author majinliang
+ */
 public class RpcServer implements ApplicationContextAware, InitializingBean {
+    private static final Logger logger = Logger.getLogger(RpcServer.class);
+
     private ServiceRegistry serviceRegistry;
     private String serviceAddress;
 
@@ -42,18 +48,20 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
     public void setApplicationContext(ApplicationContext ctx) throws BeansException {
 
         Map<String, Object> serviceBeanMap = ctx.getBeansWithAnnotation(RpcService.class);
-        for (Object headler : serviceBeanMap.values()) {
-            Class<?> clazz = headler.getClass();
+        for (Object handler : serviceBeanMap.values()) {
+            Class<?> clazz = handler.getClass();
             RpcService rpcServiceAnno = clazz.getAnnotation(RpcService.class);
             Class<?> type = rpcServiceAnno.value();
             String version = rpcServiceAnno.version();
             String serviceName = type.getName() + version;
-            handlerMap.put(serviceName, headler);
+            logger.info(String.format("Loaded handler class=%s >> serviceName=%s.", clazz.getName(), serviceName));
+            handlerMap.put(serviceName, handler);
         }
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        logger.info("Starting server.");
         String[] address = serviceAddress.split(":");
         String host = address[0];
         int port = Integer.parseInt(address[1]);
@@ -79,7 +87,7 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
             for (String interfaceName : handlerMap.keySet()) {
                 serviceRegistry.register(interfaceName, serviceAddress);
             }
-            System.out.println("Server start linsten at: " + future.channel().localAddress());
+            logger.info("Server start linsten at: " + future.channel().localAddress());
             future.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();

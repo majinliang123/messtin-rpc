@@ -67,6 +67,5 @@
         <module>rpc-common</module>
         <module>rpc-registry</module>
         <module>rpc-registry-zookeeper</module>
-        <module>sample</module>
     </modules>
 </project>
